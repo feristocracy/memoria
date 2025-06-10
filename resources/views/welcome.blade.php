@@ -7,6 +7,9 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
 
+<div class="flex flex-col items-center w-full">
+    <h1 class="mb-6"><img src="/images/logo.jpg" alt="logo de la empresa"></h1>
+
     <form action="{{ route('start') }}" method="POST" class="bg-white p-8 rounded shadow-md w-full max-w-sm">
         @csrf
         <h1 class="text-xl font-bold mb-6 text-center">Iniciar Juego de Memoria</h1>
@@ -26,5 +29,7 @@
         </button>
     </form>
 
+    <footer class="w-100 text-center mt-5">Desarrollado por: 🖥Tecno Glitch</footer>
+</div>
 </body>
 </html>

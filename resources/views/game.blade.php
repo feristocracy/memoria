@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Juego de Memoria</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         .card {
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
             perspective: 1000px;
         }
+
         .card-inner {
             position: relative;
             width: 100%;
@@ -15,10 +18,13 @@
             transform-style: preserve-3d;
             transition: transform 0.6s;
         }
+
         .flipped .card-inner {
             transform: rotateY(180deg);
         }
-        .card-front, .card-back {
+
+        .card-front,
+        .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -30,41 +36,61 @@
             font-weight: bold;
             border-radius: 0.5rem;
         }
+
         .card-front {
-            background-color: #f59e0b; /* naranja */
+            background-image: url('/images/logoch.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
         }
+
         .card-back {
-            background-color: #1f2937; /* gris oscuro */
-            color: white;
+            background-color: #E89853;
+            /* gris oscuro */
+            color: black;
             transform: rotateY(180deg);
+        }
+
+        .matched {
+            filter: brightness(0.5) saturate(1.2);
+            box-shadow: 0 0 10px rgb(21, 142, 65);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
 
-    <h1 class="text-2xl font-bold mb-6">Memorama: Encuentra las parejitas</h1>
+<body class="bg-gray-200 text-black min-h-screen flex flex-col items-center justify-center p-4">
+
+    <h1 class="text-2xl font-bold mb-6 text-gray-900">Memorama: Encuentra las parejas</h1>
 
     <div class="grid grid-cols-5 gap-4 mb-6 max-w-4xl w-full">
         @foreach ($cards as $index => $card)
-            <div class="card w-full aspect-square" data-index="{{ $index }}" data-type="{{ $card['type'] }}" data-text="{{ $card['text'] }}">
-                <div class="card-inner w-full h-full">
-                    <div class="card-front">
-                        ❓
-                    </div>
-                    <div class="card-back">
-                        {{ $card['text'] }}
+        <div class="card w-full aspect-square bg-gray-300" data-index="{{ $index }}" data-type="{{ $card['type'] }}" data-text="{{ $card['text'] }}">
+            <div class="card-inner w-full h-full">
+                <div class="card-front">
+
+                </div>
+                <div class="card-back {{ $card['type'] === 'question' ? 'bg-blue-700' : 'bg-red-700' }}">
+                    <div class="text-center px-2">
+                        <span class="block text-sm uppercase font-bold text-orange-900">
+                            {{ $card['type'] === 'question' ? 'Pregunta:' : 'Respuesta:' }}
+                        </span>
+                        <span class="block mt-1">
+                            {{ $card['text'] }}
+                        </span>
                     </div>
                 </div>
+
+
             </div>
+        </div>
         @endforeach
     </div>
 
-    <div class="mb-4 text-lg">Intentos: <span id="attempts">0</span></div>
+    <div class="mb-4 text-xl font-bold text-gray-900">Intentos: <span id="attempts">0</span></div>
     <div id="message" class="text-green-400 font-bold mb-4 hidden">
-    🎉 ¡Felicidades, has completado el juego en <span id="final-attempts"></span> intentos!
-</div>
+        🎉 ¡Felicidades, has completado el juego en <span id="final-attempts"></span> intentos!
+    </div>
 
-    <a href="{{ route('scores') }}" class="text-blue-400 underline">Ver puntuaciones</a>
 
     <script>
         const cards = document.querySelectorAll('.card');
@@ -112,25 +138,29 @@
                         });
                         matchedPairs++;
                         if (matchedPairs === 10) {
-    document.getElementById('final-attempts').textContent = attempts;
-    document.getElementById('message').classList.remove('hidden');
+                            document.getElementById('final-attempts').textContent = attempts;
+                            document.getElementById('message').classList.remove('hidden');
 
-    // 🎉 Animación de confeti
-    confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { y: 0.6 }
-    });
+                            // 🎉 Animación de confeti
+                            confetti({
+                                particleCount: 150,
+                                spread: 100,
+                                origin: {
+                                    y: 0.6
+                                }
+                            });
 
-    fetch("{{ route('score') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        },
-        body: JSON.stringify({ attempts: attempts })
-    });
-}
+                            fetch("{{ route('score') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify({
+                                    attempts: attempts
+                                })
+                            });
+                        }
                         flippedCards = [];
                     } else {
                         setTimeout(() => {
@@ -145,4 +175,5 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 </body>
+
 </html>
