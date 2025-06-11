@@ -52,7 +52,7 @@
         }
 
         .matched {
-            filter: brightness(0.5) saturate(1.2);
+            filter: brightness(0.7) saturate(1.2);
             box-shadow: 0 0 10px rgb(21, 142, 65);
         }
 
@@ -62,7 +62,7 @@
         }
 
         .card-error {
-            background-color:rgb(226, 85, 85) !important;
+            background-color: rgb(226, 85, 85) !important;
             /* rojo intenso */
             transition: background-color 0.3s ease;
         }
@@ -124,11 +124,24 @@
 
         cards.forEach(card => {
             card.addEventListener('click', () => {
-                if (card.classList.contains('matched') || flippedCards.includes(card)) return;
+                // Evita que el jugador interactúe con una carta ya volteada o completada
+                if (card.classList.contains('matched') || card.classList.contains('flipped')) return;
 
+                // Si hay dos cartas fallidas aún sin limpiar, voltearlas primero
+                if (flippedCards.length === 2) {
+                    flippedCards.forEach(c => {
+                        const back = c.querySelector('.card-back');
+                        back.classList.remove('card-error');
+                        c.classList.remove('flipped');
+                    });
+                    flippedCards = [];
+                }
+
+                // Voltear carta actual
                 card.classList.add('flipped');
                 flippedCards.push(card);
 
+                // Procesar cuando haya 2 cartas seleccionadas
                 if (flippedCards.length === 2) {
                     attempts++;
                     document.getElementById('attempts').textContent = attempts;
@@ -144,15 +157,13 @@
                         (validPairs[text2] === text1 && type2 === 'question' && type1 === 'answer');
 
                     if (isMatch) {
-                        flippedCards.forEach(c => {
-                            c.classList.add('matched');
-                        });
+                        flippedCards.forEach(c => c.classList.add('matched'));
                         matchedPairs++;
+
                         if (matchedPairs === 10) {
                             document.getElementById('final-attempts').textContent = attempts;
                             document.getElementById('message').classList.remove('hidden');
 
-                            // 🎉 Animación de confeti
                             confetti({
                                 particleCount: 150,
                                 spread: 100,
@@ -172,20 +183,15 @@
                                 })
                             });
                         }
+
                         flippedCards = [];
                     } else {
+                        // Mostramos error en rojo, pero no volteamos de inmediato
                         flippedCards.forEach(c => {
                             const back = c.querySelector('.card-back');
                             back.classList.add('card-error');
                         });
-
-                        setTimeout(() => {
-                            flippedCards.forEach(c => {
-                                c.classList.remove('card-error');
-                                c.classList.remove('flipped');
-                            });
-                            flippedCards = [];
-                        }, 2000);
+                        // Las cartas se quedan hasta el próximo clic
                     }
                 }
             });
