@@ -21,16 +21,16 @@ class GameController extends Controller
 
         // Pares pregunta => respuesta
         $pairs = [
-            '¿Capital de Francia?' => 'París',
-            '¿5 + 3?' => '8',
-            '¿Color del cielo?' => 'Azul',
-            '¿Animal que dice “miau”?' => 'Gato',
-            '¿Lenguaje de Laravel?' => 'PHP',
-            '¿Número de días en una semana?' => '7',
-            '¿Planeta rojo?' => 'Marte',
-            '¿Animal que ladra?' => 'Perro',
-            '¿Primer mes del año?' => 'Enero',
-            '¿2 x 6?' => '12',
+            '¿Qué es la Tienda Digital del Gobierno Federal y cuál es su función principal?' => 'Es una plataforma para compras rápidas mediante órdenes de suministro',
+            '¿Qué criterios deben considerarse para declarar un “precio no aceptable”?' => 'Cuando excede el presupuesto o supera en más del 10% la mediana del mercado',
+            'Qué papel juegan las Mipymes y organizaciones del sector social en esta Ley' => 'Tienen trato preferente y beneficios en los procesos de contratación',
+            '¿Qué principios deben regir los procedimientos de contratación conforme al artículo 20?' => 'Eficiencia, economía, imparcialidad y transparencia',
+            '¿Cuál es la función del Comité de Contrataciones Estratégicas?' => 'Aprobar compras consolidadas y autorizar subcomités',
+            '¿Qué condiciones deben cumplirse para adquirir bienes muebles usados o reconstruidos?' => 'Avalúo vigente y valor mayor a 100 mil UMAs',
+            '¿Qué mecanismos contempla la Ley para fomentar la sostenibilidad en las adquisiciones?' => 'Materiales reciclados, certificaciones y puntos extra por políticas verdes',
+            '¿Cuál es el alcance de la Secretaría Anticorrupción y Buen Gobierno en esta Ley?' => 'Emitir lineamientos y coordinar políticas anticorrupción en contrataciones',
+            '¿Qué deben hacer las dependencias antes de contratar consultorías o estudios externos?' => 'Verificar que no existan trabajos similares y obtener dictamen técnico',
+            '¿Qué sucede si se celebra un contrato en contravención a la Ley?' => 'Será nulo y se resolverá conforme al Título Séptimo de la Ley',
         ];
 
         $cards = [];

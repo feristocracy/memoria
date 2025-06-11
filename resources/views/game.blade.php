@@ -55,6 +55,17 @@
             filter: brightness(0.5) saturate(1.2);
             box-shadow: 0 0 10px rgb(21, 142, 65);
         }
+
+        .card:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+        }
+
+        .card-error {
+            background-color:rgb(226, 85, 85) !important;
+            /* rojo intenso */
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 
@@ -70,11 +81,11 @@
 
                 </div>
                 <div class="card-back {{ $card['type'] === 'question' ? 'bg-blue-700' : 'bg-red-700' }}">
-                    <div class="text-center px-2">
-                        <span class="block text-sm uppercase font-bold text-orange-900">
+                    <div class="text-center px-2 w-full h-full flex flex-col justify-center items-center overflow-hidden text-ellipsis">
+                        <span class="block text-sm uppercase font-bold text-orange-900 break-words leading-tight">
                             {{ $card['type'] === 'question' ? 'Pregunta:' : 'Respuesta:' }}
                         </span>
-                        <span class="block mt-1">
+                        <span class="block mt-1 text-sm sm:text-base break-words leading-tight text-wrap">
                             {{ $card['text'] }}
                         </span>
                     </div>
@@ -99,16 +110,16 @@
         let attempts = 0;
 
         const validPairs = {
-            '¿Capital de Francia?': 'París',
-            '¿5 + 3?': '8',
-            '¿Color del cielo?': 'Azul',
-            '¿Animal que dice “miau”?': 'Gato',
-            '¿Lenguaje de Laravel?': 'PHP',
-            '¿Número de días en una semana?': '7',
-            '¿Planeta rojo?': 'Marte',
-            '¿Animal que ladra?': 'Perro',
-            '¿Primer mes del año?': 'Enero',
-            '¿2 x 6?': '12'
+            '¿Qué es la Tienda Digital del Gobierno Federal y cuál es su función principal?': 'Es una plataforma para compras rápidas mediante órdenes de suministro',
+            '¿Qué criterios deben considerarse para declarar un “precio no aceptable”?': 'Cuando excede el presupuesto o supera en más del 10% la mediana del mercado',
+            'Qué papel juegan las Mipymes y organizaciones del sector social en esta Ley': 'Tienen trato preferente y beneficios en los procesos de contratación',
+            '¿Qué principios deben regir los procedimientos de contratación conforme al artículo 20?': 'Eficiencia, economía, imparcialidad y transparencia',
+            '¿Cuál es la función del Comité de Contrataciones Estratégicas?': 'Aprobar compras consolidadas y autorizar subcomités',
+            '¿Qué condiciones deben cumplirse para adquirir bienes muebles usados o reconstruidos?': 'Avalúo vigente y valor mayor a 100 mil UMAs',
+            '¿Qué mecanismos contempla la Ley para fomentar la sostenibilidad en las adquisiciones?': 'Materiales reciclados, certificaciones y puntos extra por políticas verdes',
+            '¿Cuál es el alcance de la Secretaría Anticorrupción y Buen Gobierno en esta Ley?': 'Emitir lineamientos y coordinar políticas anticorrupción en contrataciones',
+            '¿Qué deben hacer las dependencias antes de contratar consultorías o estudios externos?': 'Verificar que no existan trabajos similares y obtener dictamen técnico',
+            '¿Qué sucede si se celebra un contrato en contravención a la Ley?': 'Será nulo y se resolverá conforme al Título Séptimo de la Ley'
         };
 
         cards.forEach(card => {
@@ -163,10 +174,18 @@
                         }
                         flippedCards = [];
                     } else {
+                        flippedCards.forEach(c => {
+                            const back = c.querySelector('.card-back');
+                            back.classList.add('card-error');
+                        });
+
                         setTimeout(() => {
-                            flippedCards.forEach(c => c.classList.remove('flipped'));
+                            flippedCards.forEach(c => {
+                                c.classList.remove('card-error');
+                                c.classList.remove('flipped');
+                            });
                             flippedCards = [];
-                        }, 1000);
+                        }, 2000);
                     }
                 }
             });
