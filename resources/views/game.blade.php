@@ -66,6 +66,24 @@
             /* rojo intenso */
             transition: background-color 0.3s ease;
         }
+
+        .card-flash {
+            animation: flashFlip 0.6s ease-in-out;
+        }
+
+        @keyframes flashFlip {
+            0% {
+                transform: rotateY(180deg);
+            }
+
+            50% {
+                transform: rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateY(180deg);
+            }
+        }
     </style>
 </head>
 
@@ -124,24 +142,54 @@
 
         cards.forEach(card => {
             card.addEventListener('click', () => {
-                // Evita que el jugador interactúe con una carta ya volteada o completada
-                if (card.classList.contains('matched') || card.classList.contains('flipped')) return;
+                // No permitir clic en cartas ya acertadas
+                if (card.classList.contains('matched')) return;
 
-                // Si hay dos cartas fallidas aún sin limpiar, voltearlas primero
+                // Si hay 2 cartas volteadas que fueron error (no match)
                 if (flippedCards.length === 2) {
-                    flippedCards.forEach(c => {
-                        const back = c.querySelector('.card-back');
-                        back.classList.remove('card-error');
-                        c.classList.remove('flipped');
-                    });
-                    flippedCards = [];
+                    // Si se hizo clic en una de esas cartas, conservarla
+                    if (flippedCards.includes(card)) {
+                        // Voltear la otra
+                        const other = flippedCards.find(c => c !== card);
+                        other.classList.remove('flipped');
+                        const otherBack = other.querySelector('.card-back');
+                        otherBack.classList.remove('card-error');
+
+                        // Limpiar error visual en la seleccionada
+                        const selectedBack = card.querySelector('.card-back');
+                        selectedBack.classList.remove('card-error');
+
+                        // ✨ Animación: cerrar y volver a abrir la carta seleccionada
+                        const cardInner = card.querySelector('.card-inner');
+                        cardInner.classList.add('card-flash');
+
+                        // Limpiar clase de animación después de que termine
+                        setTimeout(() => {
+                            cardInner.classList.remove('card-flash');
+                        }, 600);
+
+                        // Esta se convierte en la primera carta de la próxima jugada
+                        flippedCards = [card];
+                        return;
+                    } else {
+                        // Si hace clic en otra cualquiera, volteamos ambas y empezamos de nuevo
+                        flippedCards.forEach(c => {
+                            c.classList.remove('flipped');
+                            const back = c.querySelector('.card-back');
+                            back.classList.remove('card-error');
+                        });
+                        flippedCards = [];
+                    }
                 }
 
-                // Voltear carta actual
+                // Si ya fue seleccionada (flipped), no la selecciones de nuevo
+                if (card.classList.contains('flipped')) return;
+
+                // Volteamos la carta actual
                 card.classList.add('flipped');
                 flippedCards.push(card);
 
-                // Procesar cuando haya 2 cartas seleccionadas
+                // Solo evaluamos si hay dos cartas abiertas
                 if (flippedCards.length === 2) {
                     attempts++;
                     document.getElementById('attempts').textContent = attempts;
@@ -158,14 +206,15 @@
 
                     if (isMatch) {
                         flippedCards.forEach(c => c.classList.add('matched'));
-                        matchedPairs++;
+                        flippedCards = [];
 
+                        matchedPairs++;
                         if (matchedPairs === 10) {
                             document.getElementById('final-attempts').textContent = attempts;
                             document.getElementById('message').classList.remove('hidden');
 
                             confetti({
-                                particleCount: 150,
+                                particleCount: 200,
                                 spread: 100,
                                 origin: {
                                     y: 0.6
